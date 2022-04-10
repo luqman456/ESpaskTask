@@ -62,6 +62,11 @@ public class AdapterDeviceList extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyItemChanged(pos);
     }
 
+    public void deleteItem(int pos) {
+        this.deviceList.remove(pos);
+        notifyItemChanged(pos);
+    }
+
     public void setOnClick(OnClick onClick) {
         this.onClick = onClick;
     }

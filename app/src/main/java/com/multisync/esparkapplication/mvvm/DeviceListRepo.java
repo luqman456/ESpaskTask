@@ -39,6 +39,7 @@ public class DeviceListRepo {
                         onErrorInteractor.onError(response.errorBody().string());
                     } catch (IOException e) {
                         e.printStackTrace();
+                        onErrorInteractor.onError(e.getMessage());
                     }
                 } else {
                     deviceMutableLiveData.setValue(response.body());

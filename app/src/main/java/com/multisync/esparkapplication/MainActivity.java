@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -107,6 +109,24 @@ public class MainActivity extends BindingBaseActivity<ActivityMainBinding> imple
     @Override
     public void onLongClick(int position, Devices devices) {
         this.position = position;
+
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle("Delete Action!");
+        alertDialog.setMessage("Are you sure you want to delete device from list");
+        alertDialog.setCancelable(false);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete",
+                (dialog, which) -> {
+                    dialog.dismiss();
+                    adapterDeviceList.deleteItem(position);
+                });
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                (dialog, which) -> dialog.dismiss());
+        alertDialog.show();
+
+        alertDialog.show();
+
+
     }
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
@@ -117,9 +137,9 @@ public class MainActivity extends BindingBaseActivity<ActivityMainBinding> imple
                     Intent data = result.getData();
                     Toast.makeText(mContext, "Data Received", Toast.LENGTH_SHORT).show();
 
-                }else{
+                } else {
                     Intent data = result.getData();
-                    Toast.makeText(mContext, "Data Not Received"+result.getData().getStringExtra("name")+" "+data.getData(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Data Not Received" + result.getData().getStringExtra("name") + " " + data.getData(), Toast.LENGTH_SHORT).show();
                 }
             });
 }

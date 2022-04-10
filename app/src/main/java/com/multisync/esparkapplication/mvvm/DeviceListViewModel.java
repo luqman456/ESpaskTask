@@ -28,7 +28,7 @@ public class DeviceListViewModel extends AndroidViewModel implements OnErrorInte
     }
 
     public MutableLiveData<BaseResponse<List<Devices>>> getDeviceList() {
-        return deviceListRepo.deviceMutableLiveData;
+        return deviceListRepo.getDeviceMutableLiveData();
     }
 
     public void setErrorView(ErrorView errorView) {
@@ -37,6 +37,6 @@ public class DeviceListViewModel extends AndroidViewModel implements OnErrorInte
 
     @Override
     public void onError(String error) {
-
+        this.errorView.onError(error);
     }
 }

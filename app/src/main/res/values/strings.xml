@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ESparkApplication</string>
     <string name="muhammad_luqman">Muhammad Luqman</string>
+    <string name="data_not_exist_please_check_your_internet_connection">Data Not Exist Please Check Your Internet Connection.</string>
 </resources>

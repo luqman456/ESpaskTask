@@ -1,22 +1,34 @@
 package com.multisync.esparkapplication;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.multisync.esparkapplication.base.BindingBaseActivity;
+import com.multisync.esparkapplication.base.MyApplication;
 import com.multisync.esparkapplication.databinding.ActivityDeviceDetailsBinding;
 import com.multisync.esparkapplication.helper.Constant;
 import com.multisync.esparkapplication.pojo.Devices;
 
 public class DeviceDetailsActivity extends BindingBaseActivity<ActivityDeviceDetailsBinding> {
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setTitle("Device Details Activity");
+
+        @SuppressLint("UseCompatLoadingForDrawables")
+        Drawable myDrawable = getResources().getDrawable(R.drawable.vera_edge_big);
+        dataBinding.userIv.setImageDrawable(myDrawable);
+
         Intent intent = getIntent();
         Devices devices = (Devices) intent.getSerializableExtra(Constant.DEVICE_OBJECT);
         dataBinding.setDeviceDetails(devices);
@@ -27,6 +39,13 @@ public class DeviceDetailsActivity extends BindingBaseActivity<ActivityDeviceDet
         } else {
             dataBinding.cancelBtn.setVisibility(View.GONE);
             dataBinding.saveBtn.setVisibility(View.GONE);
+        }
+
+        if (devices.getPlatform() != null) {
+            dataBinding.deviceDetailIv.setImageDrawable(MyApplication.getInstance()
+                    .getResources().getDrawable(R.drawable.vera_edge_big));
+        } else {
+            setImage(dataBinding.deviceDetailIv, devices.getPlatform());
         }
 
         dataBinding.saveBtn.setOnClickListener(view -> {
@@ -46,7 +65,29 @@ public class DeviceDetailsActivity extends BindingBaseActivity<ActivityDeviceDet
 
     }
 
-    private void cancelIntent(){
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void setImage(ImageView deviceIv, String platform) {
+
+        switch (platform) {
+            case "Sercomm G450":
+                deviceIv.setImageDrawable(MyApplication.getInstance()
+                        .getResources().getDrawable(R.drawable.vera_plus_big));
+                break;
+            case "Sercomm G550":
+                deviceIv.setImageDrawable(MyApplication.getInstance()
+                        .getResources().getDrawable(R.drawable.vera_secure_big));
+                break;
+            case "MiCasaVerde VeraLite":
+            case "Sercomm NA900":
+            case "Sercomm NA301":
+            case "Sercomm NA930":
+                deviceIv.setImageDrawable(MyApplication.getInstance()
+                        .getResources().getDrawable(R.drawable.vera_edge_big));
+                break;
+        }
+    }
+
+    private void cancelIntent() {
         Intent intent = new Intent();
         setResult(Activity.RESULT_CANCELED, intent);
         finish();

@@ -10,7 +10,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.multisync.esparkapplication.adapter.AdapterDeviceList;
@@ -30,7 +32,6 @@ public class MainActivity extends BindingBaseActivity<ActivityMainBinding> imple
 
     private List<Devices> devicesList;
     private AdapterDeviceList adapterDeviceList;
-    private final int request_Code = 001;
     private int position;
 
 
@@ -44,20 +45,24 @@ public class MainActivity extends BindingBaseActivity<ActivityMainBinding> imple
         deviceListViewModel.setErrorView(this);
         initializeRecycleView();
 
+        @SuppressLint("UseCompatLoadingForDrawables")
+        Drawable myDrawable = getResources().getDrawable(R.drawable.vera_edge_big);
+        dataBinding.userIv.setImageDrawable(myDrawable);
+
 
         showProgressDialog();
         deviceListViewModel.callDeviceListApi();
 
         deviceListViewModel.getDeviceList().observe(this, listBaseResponse -> {
             dismissProgressDialog();
-            DisplayLog.showLog("TAG", " getMedicationList " + listBaseResponse);
             if (listBaseResponse.getData() != null) {
-                DisplayLog.showLog("TAG", " ListSize " + listBaseResponse.getData().size());
-                if (!devicesList.isEmpty()) {
-                    devicesList.clear();
-                }
+                dataBinding.dataNotExistTxt.setVisibility(View.GONE);
+                dataBinding.deviceRecycleView.setVisibility(View.VISIBLE);
                 devicesList.addAll(listBaseResponse.getData());
                 adapterDeviceList.notifyDataSetChanged();
+            }else{
+                dataBinding.dataNotExistTxt.setVisibility(View.VISIBLE);
+                dataBinding.deviceRecycleView.setVisibility(View.GONE);
             }
         });
 

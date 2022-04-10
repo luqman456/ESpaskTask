@@ -1,6 +1,9 @@
 package com.multisync.esparkapplication.pojo;
 
+import androidx.databinding.Bindable;
+
 import com.google.gson.annotations.SerializedName;
+import com.multisync.esparkapplication.BR;
 
 import java.io.Serializable;
 

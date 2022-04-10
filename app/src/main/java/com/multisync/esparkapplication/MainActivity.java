@@ -1,7 +1,5 @@
 package com.multisync.esparkapplication;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -19,6 +16,7 @@ import android.widget.Toast;
 import com.multisync.esparkapplication.adapter.AdapterDeviceList;
 import com.multisync.esparkapplication.base.BindingBaseActivity;
 import com.multisync.esparkapplication.databinding.ActivityMainBinding;
+import com.multisync.esparkapplication.helper.Constant;
 import com.multisync.esparkapplication.helper.DisplayLog;
 import com.multisync.esparkapplication.interfaces.ErrorView;
 import com.multisync.esparkapplication.interfaces.OnClick;
@@ -92,8 +90,8 @@ public class MainActivity extends BindingBaseActivity<ActivityMainBinding> imple
     @Override
     public void onClick(Devices devices) {
         Intent intent = new Intent(this, DeviceDetailsActivity.class);
-        intent.putExtra("device_object", devices);
-        intent.putExtra("only_view", "only_view");
+        intent.putExtra(Constant.DEVICE_OBJECT, devices);
+        intent.putExtra(Constant.VIEW, Constant.ONLY_VIEW);
         someActivityResultLauncher.launch(intent);
     }
 
@@ -101,15 +99,14 @@ public class MainActivity extends BindingBaseActivity<ActivityMainBinding> imple
     public void onEdit(int position, Devices devices) {
         this.position = position;
         Intent intent = new Intent(this, DeviceDetailsActivity.class);
-        intent.putExtra("device_object", devices);
-        intent.putExtra("only_view", "edit");
+        intent.putExtra(Constant.DEVICE_OBJECT, devices);
+        intent.putExtra(Constant.VIEW, Constant.EDIT);
         someActivityResultLauncher.launch(intent);
     }
 
     @Override
     public void onLongClick(int position, Devices devices) {
         this.position = position;
-
         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
         alertDialog.setTitle("Delete Action!");
         alertDialog.setMessage("Are you sure you want to delete device from list");
@@ -133,13 +130,14 @@ public class MainActivity extends BindingBaseActivity<ActivityMainBinding> imple
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    // There are no request codes
                     Intent data = result.getData();
-                    Toast.makeText(mContext, "Data Received", Toast.LENGTH_SHORT).show();
+                    assert data != null;
+                    if (data.getStringExtra(Constant.VIEW).equals(Constant.EDIT)) {
+                        Devices devices = (Devices) data.getSerializableExtra(Constant.DEVICE_OBJECT);
+                        adapterDeviceList.updateItem(position, devices);
+                        Toast.makeText(mContext, "Data Update", Toast.LENGTH_SHORT).show();
+                    }
 
-                } else {
-                    Intent data = result.getData();
-                    Toast.makeText(mContext, "Data Not Received" + result.getData().getStringExtra("name") + " " + data.getData(), Toast.LENGTH_SHORT).show();
                 }
             });
 }
